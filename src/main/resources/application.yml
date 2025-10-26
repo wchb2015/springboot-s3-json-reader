@@ -10,6 +10,13 @@ aws:
     # which automatically uses AWS CLI credentials, environment variables,
     # or IAM roles. No need to specify them here.
 
+scheduler:
+  s3:
+    enabled: ${SCHEDULER_ENABLED:true}
+    initial-delay: ${SCHEDULER_INITIAL_DELAY:0}  # milliseconds
+    fixed-delay: ${SCHEDULER_FIXED_DELAY:5000}   # milliseconds (5 seconds default)
+    thread-pool-size: ${SCHEDULER_THREAD_POOL_SIZE:2}
+
 spring:
   application:
     name: s3-json-reader
