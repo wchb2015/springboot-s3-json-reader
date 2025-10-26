@@ -1,0 +1,15 @@
+server:
+  port: 8080
+
+aws:
+  s3:
+    bucket-name: ${AWS_S3_BUCKET_NAME:chongbei-test-input}
+    region: ${AWS_S3_REGION:us-east-1}
+    json-file-key: ${AWS_S3_JSON_FILE_KEY:data.json}
+    # Credentials are now handled by DefaultCredentialsProvider
+    # which automatically uses AWS CLI credentials, environment variables,
+    # or IAM roles. No need to specify them here.
+
+spring:
+  application:
+    name: s3-json-reader
