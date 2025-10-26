@@ -1,6 +1,9 @@
 package com.example.s3jsonreader.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -79,44 +82,13 @@ public class S3DataCacheService {
     /**
      * Inner class to hold cache statistics
      */
+    @Getter
+    @AllArgsConstructor
+    @ToString
     public static class CacheStats {
         private final long successfulLoads;
         private final long failedLoads;
         private final LocalDateTime lastUpdateTime;
         private final boolean hasData;
-        
-        public CacheStats(long successfulLoads, long failedLoads, 
-                         LocalDateTime lastUpdateTime, boolean hasData) {
-            this.successfulLoads = successfulLoads;
-            this.failedLoads = failedLoads;
-            this.lastUpdateTime = lastUpdateTime;
-            this.hasData = hasData;
-        }
-        
-        public long getSuccessfulLoads() {
-            return successfulLoads;
-        }
-        
-        public long getFailedLoads() {
-            return failedLoads;
-        }
-        
-        public LocalDateTime getLastUpdateTime() {
-            return lastUpdateTime;
-        }
-        
-        public boolean isHasData() {
-            return hasData;
-        }
-        
-        @Override
-        public String toString() {
-            return "CacheStats{" +
-                    "successfulLoads=" + successfulLoads +
-                    ", failedLoads=" + failedLoads +
-                    ", lastUpdateTime=" + lastUpdateTime +
-                    ", hasData=" + hasData +
-                    '}';
-        }
     }
 }

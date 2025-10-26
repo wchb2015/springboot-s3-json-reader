@@ -63,7 +63,7 @@ public class S3ScheduledLoader {
             this::loadDataFromS3,
             schedulerConfig.getInitialDelay(),
             schedulerConfig.getFixedDelay(),
-            TimeUnit.MILLISECONDS
+            TimeUnit.SECONDS
         );
         
         logger.info("S3 Scheduled Loader started successfully");
