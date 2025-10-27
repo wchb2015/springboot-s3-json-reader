@@ -15,22 +15,22 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class S3ScheduledLoader {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(S3ScheduledLoader.class);
-    
+
     private final S3Service s3Service;
     private final S3DataCacheService cacheService;
     private final SchedulerConfig schedulerConfig;
     private ScheduledExecutorService scheduledExecutorService;
-    
-    public S3ScheduledLoader(S3Service s3Service, 
-                            S3DataCacheService cacheService,
-                            SchedulerConfig schedulerConfig) {
+
+    public S3ScheduledLoader(S3Service s3Service,
+                             S3DataCacheService cacheService,
+                             SchedulerConfig schedulerConfig) {
         this.s3Service = s3Service;
         this.cacheService = cacheService;
         this.schedulerConfig = schedulerConfig;
     }
-    
+
     /**
      * Initializes the scheduled executor service and starts the background task
      */
@@ -40,51 +40,55 @@ public class S3ScheduledLoader {
             logger.info("S3 Scheduler is disabled. Skipping initialization.");
             return;
         }
-        
+
         logger.info("Initializing S3 Scheduled Loader with configuration: " +
-                   "initialDelay={}ms, fixedDelay={}ms, threadPoolSize={}", 
-                   schedulerConfig.getInitialDelay(), 
-                   schedulerConfig.getFixedDelay(),
-                   schedulerConfig.getThreadPoolSize());
-        
+                        "initialDelay={}ms, fixedDelay={}ms, threadPoolSize={}",
+                schedulerConfig.getInitialDelay(),
+                schedulerConfig.getFixedDelay(),
+                schedulerConfig.getThreadPoolSize());
+
         // Create the scheduled executor service
         scheduledExecutorService = Executors.newScheduledThreadPool(
-            schedulerConfig.getThreadPoolSize(),
-            runnable -> {
-                Thread thread = new Thread(runnable);
-                thread.setName("s3-loader-" + thread.getId());
-                thread.setDaemon(true);
-                return thread;
-            }
+                schedulerConfig.getThreadPoolSize(),
+                runnable -> {
+                    Thread thread = new Thread(runnable);
+                    thread.setName("s3-loader-" + thread.getId());
+                    thread.setDaemon(true);
+                    return thread;
+                }
         );
-        
+
+        logger.info("Initializing S3 Scheduled Loader with configuration: {},{}",
+                schedulerConfig.getInitialDelay(),
+                schedulerConfig.getFixedDelay());
+
         // Schedule the task
         scheduledExecutorService.scheduleWithFixedDelay(
-            this::loadDataFromS3,
-            schedulerConfig.getInitialDelay(),
-            schedulerConfig.getFixedDelay(),
-            TimeUnit.SECONDS
+                this::loadDataFromS3,
+                schedulerConfig.getInitialDelay(),
+                schedulerConfig.getFixedDelay(),
+                TimeUnit.SECONDS
         );
-        
+
         logger.info("S3 Scheduled Loader started successfully");
     }
-    
+
     /**
      * The task that loads data from S3
      */
     private void loadDataFromS3() {
         logger.debug("Starting scheduled S3 data load");
-        
+
         try {
             // Load data from S3
             JsonNode jsonData = s3Service.readJsonFromS3();
-            
+
             // Update the cache
             cacheService.updateCache(jsonData);
-            
-            logger.info("Successfully loaded and cached data from S3. Cache stats: {}", 
-                       cacheService.getStats());
-            
+
+            logger.info("Successfully loaded and cached data from S3. Cache stats: {}",
+                    cacheService.getStats());
+
         } catch (IOException e) {
             logger.error("Failed to load data from S3: {}", e.getMessage(), e);
             cacheService.recordFailedLoad();
@@ -93,14 +97,15 @@ public class S3ScheduledLoader {
             cacheService.recordFailedLoad();
         }
     }
-    
+
     /**
      * Manually trigger a data load (useful for testing or on-demand refresh)
+     *
      * @return true if load was successful, false otherwise
      */
     public boolean triggerManualLoad() {
         logger.info("Manual S3 data load triggered");
-        
+
         try {
             JsonNode jsonData = s3Service.readJsonFromS3();
             cacheService.updateCache(jsonData);
@@ -112,7 +117,7 @@ public class S3ScheduledLoader {
             return false;
         }
     }
-    
+
     /**
      * Gracefully shuts down the scheduled executor service
      */
@@ -120,15 +125,15 @@ public class S3ScheduledLoader {
     public void shutdown() {
         if (scheduledExecutorService != null && !scheduledExecutorService.isShutdown()) {
             logger.info("Shutting down S3 Scheduled Loader");
-            
+
             scheduledExecutorService.shutdown();
-            
+
             try {
                 // Wait for tasks to complete
                 if (!scheduledExecutorService.awaitTermination(10, TimeUnit.SECONDS)) {
                     logger.warn("Scheduled executor did not terminate in time, forcing shutdown");
                     scheduledExecutorService.shutdownNow();
-                    
+
                     if (!scheduledExecutorService.awaitTermination(5, TimeUnit.SECONDS)) {
                         logger.error("Scheduled executor did not terminate after forced shutdown");
                     }
@@ -141,19 +146,21 @@ public class S3ScheduledLoader {
             }
         }
     }
-    
+
     /**
      * Check if the scheduler is running
+     *
      * @return true if running, false otherwise
      */
     public boolean isRunning() {
-        return scheduledExecutorService != null && 
-               !scheduledExecutorService.isShutdown() && 
-               !scheduledExecutorService.isTerminated();
+        return scheduledExecutorService != null &&
+                !scheduledExecutorService.isShutdown() &&
+                !scheduledExecutorService.isTerminated();
     }
-    
+
     /**
      * Get the current cache statistics
+     *
      * @return CacheStats object
      */
     public S3DataCacheService.CacheStats getCacheStats() {
