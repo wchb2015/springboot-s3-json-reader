@@ -1,0 +1,51 @@
+{
+  "id": 1,
+  "bucket": "chongbei-test-input",
+  "fileName": "data.json",
+  "description": "Sample test data for S3 JSON reader",
+  "timestamp": "2024-01-01T00:00:00Z",
+  "data": {
+    "users": [
+      {
+        "userId": 1,
+        "username": "testuser1",
+        "email": "testuser1@example.com",
+        "active": true
+      },
+      {
+        "userId": 2,
+        "username": "testuser2",
+        "email": "testuser2@example.com",
+        "active": false
+      }
+    ],
+    "products": [
+      {
+        "productId": 101,
+        "name": "Product A",
+        "price": 29.99,
+        "inStock": true,
+        "categories": ["electronics", "accessories"]
+      },
+      {
+        "productId": 102,
+        "name": "Product B",
+        "price": 49.99,
+        "inStock": false,
+        "categories": ["home", "kitchen"]
+      }
+    ],
+    "settings": {
+      "environment": "test",
+      "debugMode": true,
+      "maxRetries": 3,
+      "timeout": 5000
+    }
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "author": "Test Suite",
+    "lastModified": "2024-01-01T12:00:00Z",
+    "tags": ["test", "sample", "s3", "json"]
+  }
+}

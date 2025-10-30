@@ -1,0 +1,24 @@
+[
+  {
+    "adIdToPayload": {
+      "ad_001": "payload_content_001",
+      "ad_002": "payload_content_002",
+      "ad_003": "payload_content_003"
+    },
+    "adIdToQueries": {
+      "ad_001": ["query_001_a", "query_001_b", "query_001_c"],
+      "ad_002": ["query_002_a", "query_002_b"],
+      "ad_003": ["query_003_a", "query_003_b", "query_003_c", "query_003_d"]
+    }
+  },
+  {
+    "adIdToPayload": {
+      "ad_004": "payload_content_004",
+      "ad_005": "payload_content_005"
+    },
+    "adIdToQueries": {
+      "ad_004": ["query_004_a", "query_004_b"],
+      "ad_005": ["query_005_a", "query_005_b", "query_005_c"]
+    }
+  }
+]

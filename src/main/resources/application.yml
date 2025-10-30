@@ -13,8 +13,8 @@ aws:
 scheduler:
   s3:
     enabled: ${SCHEDULER_ENABLED:true}
-    initial-delay: ${SCHEDULER_INITIAL_DELAY:0}  # milliseconds
-    fixed-delay: ${SCHEDULER_FIXED_DELAY:5000}   # milliseconds (5 seconds default)
+    initial-delay: ${SCHEDULER_INITIAL_DELAY:0}
+    fixed-delay: ${SCHEDULER_FIXED_DELAY:10}
     thread-pool-size: ${SCHEDULER_THREAD_POOL_SIZE:2}
 
 spring:
